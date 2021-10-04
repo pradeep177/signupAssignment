@@ -3,10 +3,29 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { createStore, applyMiddleware, compose } from 'redux';
+import { Provider } from 'react-redux'
+import createRootReducer from './reducers';
+import { createHashHistory } from 'history';
+import { routerMiddleware } from 'connected-react-router';
+
+const history = createHashHistory();
+
+export const store = createStore(
+  createRootReducer(history),
+  compose(
+    applyMiddleware(
+      routerMiddleware(history)
+    ),
+    window.devToolsExtension ? window.devToolsExtension() : f => f
+  )
+);
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+      <Provider store={store}>
+        <App />
+    </Provider>,
   </React.StrictMode>,
   document.getElementById('root')
 );
